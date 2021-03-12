@@ -15,6 +15,16 @@ from pygame_gui.elements.ui_text_box import UITextBox
 from serial import *
 from pathlib import Path
 
+baudRate = 57600 #57600 or 38400
+
+speedFastX = 's20'
+speedFastY = 'S20'
+speedFastZ = 'X60'
+
+speedSlowX = 's10'
+speedSlowY = 'S10'
+speedSlowZ = 'X30'
+
 def find_data_file(filename):
     if getattr(sys, "frozen", False):
         datadir = os.path.dirname(sys.executable)
@@ -36,16 +46,6 @@ except:
 pygame.font.init()
 myfont = pygame.font.SysFont('Trebuchet MS', 30)
 clk = pygame.time.Clock()
-
-baudRate = 57600 #57600 or 38400
-
-speedFastX = 's20'
-speedFastY = 'S20'
-speedFastZ = 'X60'
-
-speedSlowX = 's10'
-speedSlowY = 'S10'
-speedSlowZ = 'X30'
 
 ser = ''
 serBuffer = ''
@@ -220,7 +220,7 @@ def sendJoystick(arr):
     if ((sliderInt > 0) and (sliderInt < 256)):
         data[1] = 0
         data[2] = sliderInt
-    elif sliderInt > 257:
+    elif sliderInt > 256:
         data[1] = 255
         data[2] = (sliderInt-65281)
     else:
@@ -230,7 +230,7 @@ def sendJoystick(arr):
     if ((panInt > 0) and (panInt < 256)):
         data[3] = 0
         data[4] = panInt
-    elif panInt > 257:
+    elif panInt > 256:
         data[3] = 255
         data[4] = (panInt-65281)
     else:
@@ -240,7 +240,7 @@ def sendJoystick(arr):
     if ((tiltInt > 0) and (tiltInt < 256)):
         data[5] = 0
         data[6] = tiltInt
-    elif tiltInt > 257:
+    elif tiltInt > 256:
         data[5] = 255
         data[6] = (tiltInt-65281)
     else:
@@ -281,7 +281,15 @@ def readSerial():
             if len(c) == 0:
                 break
 
-            if (c == b'\xb0'):                                  # Change / remove characters that cause error
+            if (c == b'\x04'):                                          # Ignore received joystick commands from other remote
+                c = ser.read()
+                c = ser.read()
+                c = ser.read()
+                c = ser.read()
+                c = ser.read()
+                c = ser.read()
+                c = ''
+            elif (c == b'\xb0'):                                        # Change / remove characters that cause error
                 c = '°'
             elif (c == b'\xb2'):
                 c = '²'
@@ -290,23 +298,20 @@ def readSerial():
             else:
                 c = c.decode('ascii') 
 
-            if (c == '\r'):                                       # check if character is a delimeter
-                c = ''                                          # don't want returns. chuck it
+            if (c == '\r'):                                             # check if character is a delimeter
+                c = ''                                                  # don't want returns. chuck it
 
-            if (c == '\t'):                                       # check if character is a tab
-                c = '<br>'#' - '                                          # adjust
+            if (c == '\t'):                                             # check if character is a tab
+                c = '<br>'#' - '                                        # adjust
                 
             if c == '\n':
-                serBuffer += '<br>'                              # replace \n with HTML <br>
-                #textOUTPUT.insert(END, serBuffer)               #add the line to the TOP of the log
-                #textOUTPUT.see(END)
-                #serialText += serBuffer
+                serBuffer += '<br>'                                     # replace \n with HTML <br>
                 textBoxSerial.kill()
                 serialText = serBuffer + serialText
                 serialPortTextBox()
-                serBuffer = ''                                  # empty the buffer
+                serBuffer = ''                                          # empty the buffer
             else:
-                serBuffer += c                                  # add to the buffer
+                serBuffer += c                                          # add to the buffer
 
 def sendSerial(sendValue):
     global ser
@@ -316,8 +321,6 @@ def sendSerial(sendValue):
         textBoxSerial.kill()
         serialText = serialNotSel + serialText
         serialPortTextBox()
-        #textOUTPUT.insert(END, 'Serial port not selected!\n')
-        #textOUTPUT.see(END)
     else:
         ser.write(sendValue.encode())                           # Send button value to coneected com port
         
@@ -339,11 +342,9 @@ def initialiseJoysticks():
 
     if ( len( available_joysticks ) == 0 ):
         joystickName =  "No joystick found."
-        #print( "No joystick found." )
     else:
         for i,joystk in enumerate( available_joysticks ):
             joystickName = joystk.get_name()
-            #print("Joystick %d is named [%s]" % ( i, joystk.get_name() ) )
 
     return available_joysticks
 
@@ -404,24 +405,24 @@ ui_manager.clear_and_reset()
 background_surface = pygame.Surface(resolution)
 background_surface.fill(ui_manager.get_theme().get_colour('dark_bg'))
 
-rel_button_Clear = UIButton(pygame.Rect((110, 500), (60, 60)), 'Clear', ui_manager, object_id='#everything_button')
-rel_button_AddPos = UIButton(pygame.Rect((180, 500), (60, 60)), 'ADD', ui_manager, object_id='#everything_button')
-rel_button_EditPos = UIButton(pygame.Rect((250, 500), (60, 60)), 'EDIT', ui_manager, object_id='#everything_button')
-rel_button_GOFirst = UIButton(pygame.Rect((85, 560), (60, 60)), '< <', ui_manager, object_id='#everything_button')
-rel_button_GOBack = UIButton(pygame.Rect((145, 560), (60, 60)), '<', ui_manager, object_id='#everything_button')
-rel_button_GOFwd = UIButton(pygame.Rect((215, 560), (60, 60)), '>', ui_manager, object_id='#everything_button')
-rel_button_GOLast = UIButton(pygame.Rect((275, 560), (60, 60)), '> >', ui_manager, object_id='#everything_button')
-rel_button_Refresh = UIButton(pygame.Rect((430, 35), (160, 35)), 'Refresh Ports', ui_manager, object_id='#everything_button')
-rel_button_ExecMoves = UIButton(pygame.Rect((430, 180), (160, 60)), 'Exec. Moves', ui_manager, object_id='#everything_button')
-rel_button_OrbitPoint = UIButton(pygame.Rect((430, 240), (160, 60)), 'Orbit Point', ui_manager, object_id='#everything_button')
-rel_button_Timelapse = UIButton(pygame.Rect((430, 300), (160, 60)), 'Timelapse', ui_manager, object_id='#everything_button')
-rel_button_PANORAMICLAPSE = UIButton(pygame.Rect((430, 360), (160, 60)), 'Panoramiclapse', ui_manager, object_id='#everything_button')
-rel_button_REPORT = UIButton(pygame.Rect((460, 500), (100, 60)), 'Report', ui_manager, object_id='#everything_button')
+rel_button_Clear = UIButton(pygame.Rect((110, 500), (60, 60)), 'Clear', ui_manager)#, object_id='#everything_button')
+rel_button_AddPos = UIButton(pygame.Rect((180, 500), (60, 60)), 'ADD', ui_manager)
+rel_button_EditPos = UIButton(pygame.Rect((250, 500), (60, 60)), 'EDIT', ui_manager)
+rel_button_GOFirst = UIButton(pygame.Rect((85, 560), (60, 60)), '< <', ui_manager)
+rel_button_GOBack = UIButton(pygame.Rect((145, 560), (60, 60)), '<', ui_manager)
+rel_button_GOFwd = UIButton(pygame.Rect((215, 560), (60, 60)), '>', ui_manager)
+rel_button_GOLast = UIButton(pygame.Rect((275, 560), (60, 60)), '> >', ui_manager)
+rel_button_Refresh = UIButton(pygame.Rect((430, 35), (160, 35)), 'Refresh Ports', ui_manager)
+rel_button_ExecMoves = UIButton(pygame.Rect((430, 180), (160, 60)), 'Exec. Moves', ui_manager)
+rel_button_OrbitPoint = UIButton(pygame.Rect((430, 240), (160, 60)), 'Orbit Point', ui_manager)
+rel_button_Timelapse = UIButton(pygame.Rect((430, 300), (160, 60)), 'Timelapse', ui_manager)
+rel_button_PANORAMICLAPSE = UIButton(pygame.Rect((430, 360), (160, 60)), 'Panoramiclapse', ui_manager)
+rel_button_REPORT = UIButton(pygame.Rect((460, 500), (100, 60)), 'Report', ui_manager)
 rel_button_CLEARtext = UIButton(pygame.Rect((460, 570), (100, 40)), 'Clear Text', ui_manager)
-joystick_label = UILabel(pygame.Rect(540, 10, 230, 24), "Joystick", ui_manager, object_id='#main_text_entry')
-serial_text_entry = UITextEntryLine(pygame.Rect((930, 95), (250, 35)), ui_manager, object_id='#main_text_entry')
-serial_port_label = UILabel(pygame.Rect(550, 70, 230, 24), "Serial Port", ui_manager, object_id='#main_text_entry')
-serial_command_label = UILabel(pygame.Rect(870, 70, 230, 24), "Serial Command", ui_manager, object_id='#main_text_entry')
+joystick_label = UILabel(pygame.Rect(540, 10, 230, 24), "Joystick", ui_manager)#, object_id='#main_text_entry')
+serial_text_entry = UITextEntryLine(pygame.Rect((930, 95), (250, 35)), ui_manager)
+serial_port_label = UILabel(pygame.Rect(550, 70, 230, 24), "Serial Port", ui_manager)
+serial_command_label = UILabel(pygame.Rect(870, 70, 230, 24), "Serial Command", ui_manager)
 
 current_serialPort = ' - '
 ports = serial.tools.list_ports.comports()
@@ -429,22 +430,15 @@ available_ports = []
 for p in ports:
     available_ports.append(p.device)                        # Append each found serial port to array available_ports
 
-drop_down_serial = UIDropDownMenu(available_ports,
-                                            current_serialPort,
-                                            pygame.Rect((620,95),
-                                            (250, 30)),
-                                            ui_manager)
+drop_down_serial = UIDropDownMenu(available_ports, current_serialPort, pygame.Rect((620,95), (250, 30)), ui_manager)
 
 serialPortTextBox()
 textBoxJoystickName()
 
 joyCircle = pygame.draw.circle(window_surface, pygame.Color("blue"), (225,225), radius)
 joyCircle_draging = False
-
 joyCircle.x = 195
 joyCircle.y = 195
-
-# Generate crosshair
 crosshair = pygame.surface.Surface((30, 30))
 crosshair.fill(pygame.Color("magenta"))
 pygame.draw.circle(crosshair, pygame.Color("blue"), (radius,radius), radius)
@@ -453,16 +447,13 @@ crosshair.set_colorkey(pygame.Color("magenta"))#, pygame.RLEACCEL)
 
 sliderCircle = pygame.draw.circle(window_surface, pygame.Color("blue"), (225,415), radius)
 sliderCircle_draging = False
-
 sliderCircle.x = 195
 sliderCircle.y = 415
-
-# Generate crosshair
 crosshairSlider = pygame.surface.Surface((30, 30))
 crosshairSlider.fill(pygame.Color("magenta"))
 pygame.draw.circle(crosshairSlider, pygame.Color("blue"), (radius,radius), radius)
 crosshairSlider.set_colorkey(pygame.Color("magenta"))#, pygame.RLEACCEL)
-#crosshair = crosshair.convert()
+#crosshairSlider = crosshairSlider.convert()
 
 def process_events():
     global arr
@@ -1016,15 +1007,15 @@ def process_events():
                         button9Pressed = True
                         sendGOLast()
                         #print("9 - Down")
-                    elif (joystick.get_button(10) and not button10Pressed):               # Right
+                    elif (joystick.get_button(10) and not button10Pressed):             # Right
                         button10Pressed = True
                         sendGOFwd()
                         #print("10 - Right")
-                    elif (joystick.get_button(11) and not button11Pressed):               # Left
+                    elif (joystick.get_button(11) and not button11Pressed):             # Left
                         button11Pressed = True
                         sendGOBack()
                         #print("11 - Left")
-                    elif (joystick.get_button(12) and not button12Pressed):               # Menu
+                    elif (joystick.get_button(12) and not button12Pressed):             # Menu
                         button12Pressed = True
                         sendREPORTall()
                         #print("12 - Menu")
@@ -1124,8 +1115,7 @@ def process_events():
                 elif event.ui_element == rel_button_CLEARtext:
                     sendCLEARtext()
 
-            if (event.user_type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED
-                and event.ui_element == drop_down_serial):
+            if (event.user_type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED and event.ui_element == drop_down_serial):
                 serialPort_changed()
 
         if event.type == pygame.MOUSEBUTTONDOWN:
