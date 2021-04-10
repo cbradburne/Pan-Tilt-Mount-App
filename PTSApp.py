@@ -195,7 +195,7 @@ def serialPort_changed():
         serialNotSel = 'Serial port not available!<br>'
         current_serialPort = [' - ']
         textBoxSerial.kill()
-        serialText = serialNotSel + serialText
+        serialText = serialText + serialNotSel
         serialPortTextBox()
         drop_down_serial.kill()
         drop_down_serial = UIDropDownMenu(available_ports,                      # Recreate serial port drop down list
@@ -259,6 +259,17 @@ def serialPortTextBox():
                                         pygame.Rect((620, 130), (560, 510)),
                                         ui_manager,
                                         wrap_to_height=False)
+    if textBoxSerial.scroll_bar:
+        scroll_bar = textBoxSerial.scroll_bar
+        scroll_bar.scroll_position = (scroll_bar.bottom_limit - scroll_bar.sliding_button.rect.height)
+        x_pos = scroll_bar.rect.x + scroll_bar.shadow_width + scroll_bar.border_width
+        y_pos = scroll_bar.scroll_position + scroll_bar.rect.y + scroll_bar.shadow_width + \
+                scroll_bar.border_width + scroll_bar.button_height
+        scroll_bar.sliding_button.set_position(pygame.math.Vector2(x_pos, y_pos))
+
+        scroll_bar.start_percentage = scroll_bar.scroll_position / scroll_bar.scrollable_height
+        if not scroll_bar.has_moved_recently:
+            scroll_bar.has_moved_recently = True
     
 def textBoxJoystickName():
     global joystickName
@@ -307,7 +318,7 @@ def readSerial():
             if c == '\n':
                 serBuffer += '<br>'                                     # replace \n with HTML <br>
                 textBoxSerial.kill()
-                serialText = serBuffer + serialText
+                serialText = serialText + serBuffer
                 serialPortTextBox()
                 serBuffer = ''                                          # empty the buffer
             else:
@@ -319,7 +330,7 @@ def sendSerial(sendValue):
     if (ser == ''):                                             # Checks to see if com port has been selected
         serialNotSel = 'Serial port not selected!<br>'
         textBoxSerial.kill()
-        serialText = serialNotSel + serialText
+        serialText = serialText + serialNotSel
         serialPortTextBox()
     else:
         ser.write(sendValue.encode())                           # Send button value to coneected com port
@@ -1246,7 +1257,7 @@ while running:
         current_serialPort = [' - ']
         serialNotSel = 'Serial port disconnected.<br>'
         textBoxSerial.kill()
-        serialText = serialNotSel + serialText
+        serialText = serialText + serialNotSel
         serialPortTextBox()   
         ports = serial.tools.list_ports.comports()                              # Search for attached serial ports
         available_ports = []
