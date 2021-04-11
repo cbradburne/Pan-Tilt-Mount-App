@@ -255,10 +255,9 @@ def sendJoystick(arr):
 
 def serialPortTextBox():
     global textBoxSerial
-    textBoxSerial = UITextBox(serialText,
+    textBoxSerial = UITextBox('<font face=roboto size=4 color=#F0F0F0>' + serialText + '</font>',
                                         pygame.Rect((620, 130), (560, 510)),
-                                        ui_manager,
-                                        wrap_to_height=False)
+                                        ui_manager)
     if textBoxSerial.scroll_bar:
         scroll_bar = textBoxSerial.scroll_bar
         scroll_bar.scroll_position = (scroll_bar.bottom_limit - scroll_bar.sliding_button.rect.height)
@@ -416,22 +415,22 @@ ui_manager.clear_and_reset()
 background_surface = pygame.Surface(resolution)
 background_surface.fill(ui_manager.get_theme().get_colour('dark_bg'))
 
-rel_button_Clear = UIButton(pygame.Rect((110, 500), (60, 60)), 'Clear', ui_manager)#, object_id='#everything_button')
-rel_button_AddPos = UIButton(pygame.Rect((180, 500), (60, 60)), 'ADD', ui_manager)
-rel_button_EditPos = UIButton(pygame.Rect((250, 500), (60, 60)), 'EDIT', ui_manager)
-rel_button_GOFirst = UIButton(pygame.Rect((85, 560), (60, 60)), '< <', ui_manager)
-rel_button_GOBack = UIButton(pygame.Rect((145, 560), (60, 60)), '<', ui_manager)
-rel_button_GOFwd = UIButton(pygame.Rect((215, 560), (60, 60)), '>', ui_manager)
-rel_button_GOLast = UIButton(pygame.Rect((275, 560), (60, 60)), '> >', ui_manager)
-rel_button_Refresh = UIButton(pygame.Rect((430, 35), (160, 35)), 'Refresh Ports', ui_manager)
-rel_button_ExecMoves = UIButton(pygame.Rect((430, 180), (160, 60)), 'Exec. Moves', ui_manager)
-rel_button_OrbitPoint = UIButton(pygame.Rect((430, 240), (160, 60)), 'Orbit Point', ui_manager)
-rel_button_Timelapse = UIButton(pygame.Rect((430, 300), (160, 60)), 'Timelapse', ui_manager)
-rel_button_PANORAMICLAPSE = UIButton(pygame.Rect((430, 360), (160, 60)), 'Panoramiclapse', ui_manager)
-rel_button_REPORT = UIButton(pygame.Rect((460, 500), (100, 60)), 'Report', ui_manager)
-rel_button_CLEARtext = UIButton(pygame.Rect((460, 570), (100, 40)), 'Clear Text', ui_manager)
-joystick_label = UILabel(pygame.Rect(540, 10, 230, 24), "Joystick", ui_manager)#, object_id='#main_text_entry')
-serial_text_entry = UITextEntryLine(pygame.Rect((930, 95), (250, 35)), ui_manager)
+rel_button_Clear = UIButton(pygame.Rect((110, 500), (60, 60)), 'Clear', ui_manager, object_id='#everything_button')
+rel_button_AddPos = UIButton(pygame.Rect((180, 500), (60, 60)), 'ADD', ui_manager, object_id='#everything_button')
+rel_button_EditPos = UIButton(pygame.Rect((250, 500), (60, 60)), 'EDIT', ui_manager, object_id='#everything_button')
+rel_button_GOFirst = UIButton(pygame.Rect((85, 560), (60, 60)), '< <', ui_manager, object_id='#everything_button')
+rel_button_GOBack = UIButton(pygame.Rect((145, 560), (60, 60)), '<', ui_manager, object_id='#everything_button')
+rel_button_GOFwd = UIButton(pygame.Rect((215, 560), (60, 60)), '>', ui_manager, object_id='#everything_button')
+rel_button_GOLast = UIButton(pygame.Rect((275, 560), (60, 60)), '> >', ui_manager, object_id='#everything_button')
+rel_button_Refresh = UIButton(pygame.Rect((430, 35), (160, 35)), 'Refresh Ports', ui_manager, object_id='#everything_button')
+rel_button_ExecMoves = UIButton(pygame.Rect((430, 180), (160, 60)), 'Exec. Moves', ui_manager, object_id='#everything_button')
+rel_button_OrbitPoint = UIButton(pygame.Rect((430, 240), (160, 60)), 'Orbit Point', ui_manager, object_id='#everything_button')
+rel_button_Timelapse = UIButton(pygame.Rect((430, 300), (160, 60)), 'Timelapse', ui_manager, object_id='#everything_button')
+rel_button_PANORAMICLAPSE = UIButton(pygame.Rect((430, 360), (160, 60)), 'Panoramiclapse', ui_manager, object_id='#everything_button')
+rel_button_REPORT = UIButton(pygame.Rect((460, 500), (100, 60)), 'Report', ui_manager, object_id='#everything_button')
+rel_button_CLEARtext = UIButton(pygame.Rect((460, 570), (100, 40)), 'Clear Text', ui_manager, object_id='#everything_button')
+joystick_label = UILabel(pygame.Rect(540, 10, 230, 24), "Joystick", ui_manager)
+serial_text_entry = UITextEntryLine(pygame.Rect((930, 95), (250, 35)), ui_manager, object_id='#main_text_entry')
 serial_port_label = UILabel(pygame.Rect(550, 70, 230, 24), "Serial Port", ui_manager)
 serial_command_label = UILabel(pygame.Rect(870, 70, 230, 24), "Serial Command", ui_manager)
 
