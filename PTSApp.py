@@ -1,3 +1,5 @@
+#pyinstaller --onefile --windowed --icon="PTSApp-Icon.ico" PTSApp.py
+
 import pygame
 from pygame.cursors import tri_left
 import pygame_gui
