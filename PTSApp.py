@@ -1,4 +1,7 @@
 #pyinstaller --onefile --windowed --icon="PTSApp-Icon.ico" PTSApp.py
+#python3 -m pip install pygame==2.0.1
+#python3 -m pip install pygame_gui==0.6.0
+#Make sure to change your directory to the GitHub folder for this app before running otherwise the fonts won't be found
 
 import pygame
 from pygame.cursors import tri_left
