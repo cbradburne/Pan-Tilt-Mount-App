@@ -1,7 +1,19 @@
-#pyinstaller --onefile --windowed --icon="PTSApp-Icon.ico" PTSApp.py
+#To run the application from VSCode, install the scripts below, and
+#make sure to change your directory to the GitHub folder for this app before running otherwise the fonts won't be found
+
+#macOS
 #python3 -m pip install pygame==2.0.1
-#python3 -m pip install pygame_gui==0.6.0
-#Make sure to change your directory to the GitHub folder for this app before running otherwise the fonts won't be found
+#python3 -m pip install pygame_gui==0.6.5
+#python3 -m pip install pyserial
+
+#Windows
+#python -m pip install pygame==2.0.1
+#python -m pip install pygame_gui==0.6.5
+#python -m pip install pyserial
+
+#To create an executable file:
+#python -m pip install pyinstaller
+#pyinstaller --onefile --windowed --icon="PTSApp-Icon.ico" PTSApp.py
 
 import pygame
 from pygame.cursors import tri_left
@@ -36,7 +48,7 @@ def find_data_file(filename):
     else:
         datadir = os.path.dirname(__file__)
     return os.path.join(datadir, filename)
-
+'''
 try:
     base_path = Path(__file__).parent
     image_path = (base_path / "./PTSApp-Icon.png").resolve()
@@ -47,6 +59,7 @@ except:
     imagefilepath = find_data_file(imagefile)
     gameIcon = pygame.image.load(imagefilepath)
     pygame.display.set_icon(gameIcon)
+'''
 
 pygame.font.init()
 myfont = pygame.font.SysFont('Trebuchet MS', 30)
@@ -198,13 +211,13 @@ def serialPort_changed():
     except:
         ser = ''
         serialNotSel = 'Serial port not available!<br>'
-        current_serialPort = [' - ']
+        current_serialPort = ['']
         textBoxSerial.kill()
         serialText = serialText + serialNotSel
         serialPortTextBox()
         drop_down_serial.kill()
         drop_down_serial = UIDropDownMenu(available_ports,                      # Recreate serial port drop down list
-                                        current_serialPort[0],                  # Currently selected port
+                                        available_ports[0],                  # Currently selected port
                                         pygame.Rect((620,95),
                                         (250, 30)),
                                         ui_manager)
@@ -377,10 +390,10 @@ def doRefresh():
     for p in ports:
         available_ports.append(p.device)                                # Append each found serial port to array available_ports
 
-    current_serialPort = [' - ']
+    current_serialPort = ['']
 
     drop_down_serial = UIDropDownMenu(available_ports,                  # Recreate serial port drop down list
-                                current_serialPort[0],                  # Currently selected port
+                                available_ports[0],                  # Currently selected port
                                 pygame.Rect((620,95),
                                 (250, 30)),
                                 ui_manager)
@@ -399,13 +412,13 @@ else:
 background_surface = None
 
 try:
-    base_path = Path(__file__).parent
-    file_path = (base_path / "./theme.json").resolve()
-    ui_manager = UIManager(resolution, file_path)
-except:
     themefile = "theme.json"
     full_path = find_data_file(themefile)
     ui_manager = UIManager(resolution, full_path)
+except:
+    base_path = Path(__file__).parent
+    file_path = (base_path / "./theme.json").resolve()
+    ui_manager = UIManager(resolution, file_path)
 
 running = True
 
@@ -439,13 +452,13 @@ serial_text_entry = UITextEntryLine(pygame.Rect((930, 95), (250, 35)), ui_manage
 serial_port_label = UILabel(pygame.Rect(550, 70, 230, 24), "Serial Port", ui_manager)
 serial_command_label = UILabel(pygame.Rect(870, 70, 230, 24), "Serial Command", ui_manager)
 
-current_serialPort = ' - '
+current_serialPort = '-'
 ports = serial.tools.list_ports.comports()
 available_ports = []
 for p in ports:
     available_ports.append(p.device)                        # Append each found serial port to array available_ports
 
-drop_down_serial = UIDropDownMenu(available_ports, current_serialPort, pygame.Rect((620,95), (250, 30)), ui_manager)
+drop_down_serial = UIDropDownMenu(available_ports, available_ports[0], pygame.Rect((620,95), (250, 30)), ui_manager)
 
 serialPortTextBox()
 textBoxJoystickName()
@@ -1258,7 +1271,7 @@ while running:
         readSerial()
     except:
         ser=''
-        current_serialPort = [' - ']
+        current_serialPort = ['']
         serialNotSel = 'Serial port disconnected.<br>'
         textBoxSerial.kill()
         serialText = serialText + serialNotSel
@@ -1270,7 +1283,7 @@ while running:
 
         drop_down_serial.kill()
         drop_down_serial = UIDropDownMenu(available_ports,                      # Recreate serial port drop down list
-                                        current_serialPort[0],                  # Currently selected port
+                                        available_ports[0],                  # Currently selected port
                                         pygame.Rect((620,95),
                                         (250, 30)),
                                         ui_manager)
