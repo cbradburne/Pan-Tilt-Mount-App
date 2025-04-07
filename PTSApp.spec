@@ -1,31 +1,25 @@
 # -*- mode: python ; coding: utf-8 -*-
 
 
-block_cipher = None
-
-
 a = Analysis(
     ['PTSApp.py'],
     pathex=[],
     binaries=[],
     datas=[],
     hiddenimports=[],
-    hookspath=[],
+    hookspath=['.'],
     hooksconfig={},
     runtime_hooks=[],
     excludes=[],
-    win_no_prefer_redirects=False,
-    win_private_assemblies=False,
-    cipher=block_cipher,
     noarchive=False,
+    optimize=0,
 )
-pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+pyz = PYZ(a.pure)
 
 exe = EXE(
     pyz,
     a.scripts,
     a.binaries,
-    a.zipfiles,
     a.datas,
     [],
     name='PTSApp',
@@ -41,5 +35,11 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['PTSApp-Icon.ico'],
+    icon=['PTSApp-Icon.icns'],
+)
+app = BUNDLE(
+    exe,
+    name='PTSApp.app',
+    icon='PTSApp-Icon.icns',
+    bundle_identifier=None,
 )
