@@ -481,7 +481,11 @@ available_ports = []
 for p in ports:
     available_ports.append(p.device)                        # Append each found serial port to array available_ports
 
+if available_ports == []:
+    available_ports.append("No ports available")
+
 drop_down_serial = UIDropDownMenu(available_ports, available_ports[0], pygame.Rect((620,95), (250, 30)), ui_manager)
+
 
 serialPortTextBox()
 textBoxJoystickName()

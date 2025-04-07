@@ -7,7 +7,7 @@ a = Analysis(
     binaries=[],
     datas=[],
     hiddenimports=[],
-    hookspath=['.'],
+    hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
     excludes=[],
@@ -35,11 +35,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['PTSApp-Icon.icns'],
-)
-app = BUNDLE(
-    exe,
-    name='PTSApp.app',
-    icon='PTSApp-Icon.icns',
-    bundle_identifier=None,
+    icon=['PTSApp-Icon.ico'],
 )
