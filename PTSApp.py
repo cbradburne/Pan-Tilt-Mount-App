@@ -74,7 +74,9 @@ ser = ''
 serBuffer = ''
 serialText = ''
 joystick = ''
+joystick2 = ''
 joystickName = ''
+joystickName1 = ''
 joystickName2 = ''
 button0Pressed = False
 button1Pressed = False
@@ -92,8 +94,10 @@ button12Pressed = False
 button13Pressed = False
 button14Pressed = False
 textBoxJoystickNames = None
-joy1moving = False
-joy2moving = False
+joy1Xmoving = False
+joy1Ymoving = False
+joy2Xmoving = False
+joy2Ymoving = False
 joy1sliding = False
 joy2sliding = False
 joyCircle_draging = False
@@ -370,6 +374,7 @@ def initialiseJoysticks():
     global joystick
     global joystick2
     global joystickName
+    global joystickName1
     global joystickName2
 
     available_joysticks = []                                            # for returning
@@ -391,12 +396,17 @@ def initialiseJoysticks():
         joystickName =  "No joystick found."
     else:
         #for i,joystk in enumerate( available_joysticks ):
-        joystickName = joystick.get_name()
+
+        joystickName1 = joystick.get_name()
+
         if joystick_count > 1:
             joystickName2 = joystick2.get_name()
 
             #joystickNameID = joystk.get_instance_id()
-            joystickName = joystickName + " & " + joystickName2
+            joystickName = joystickName1 + " & " + joystickName2
+
+        else:
+            joystickName = joystickName1
 
     return available_joysticks
 
@@ -516,6 +526,7 @@ def process_events():
     global joystick
     global joystick2
     global joystickName
+    global joystickName1
     global joystickName2
     global button0Pressed
     global button1Pressed
@@ -542,9 +553,10 @@ def process_events():
     global axisZ
     global previousTime
     global mouseMoving
-    global joystickName2
-    global joy1moving
-    global joy2moving
+    global joy1Xmoving
+    global joy1Ymoving
+    global joy2Xmoving
+    global joy2Ymoving
     global joy1sliding
     global joy2sliding
     global joyCircle_draging
@@ -643,157 +655,80 @@ def process_events():
         if joystick == '':
             pass
         else:
-            if (joyPS4 in joystickName) or (joyPS4BT in joystickName) or (joyPS4Win in joystickName):
+            if (joyPS4 in joystickName1) or (joyPS4BT in joystickName1) or (joyPS4Win in joystickName1):
                 if event.type == pygame.JOYBUTTONDOWN:
                     if (joystick.get_button(0) and not button0Pressed):                 # PS4 - Cross
-                        button0Pressed = True
-                        sendEditPos()
-                    elif (joystick2.get_button(0) and not button0Pressed):               # PS4 - Cross
                         button0Pressed = True
                         sendEditPos()
                     elif (joystick.get_button(1) and not button1Pressed):               # PS4 - Circle
                         button1Pressed = True
                         sendAddPos()
-                    elif (joystick2.get_button(1) and not button1Pressed):               # PS4 - Circle
-                        button1Pressed = True
-                        sendAddPos()
                     elif (joystick.get_button(2) and not button2Pressed):               # PS4 - Square
-                        button2Pressed = True
-                        sendExecMoves()
-                    elif (joystick2.get_button(2) and not button2Pressed):               # PS4 - Square
                         button2Pressed = True
                         sendExecMoves()
                     elif (joystick.get_button(3) and not button3Pressed):               # PS4 - Triangle
                         button3Pressed = True
                         sendClearArray()
-                    elif (joystick2.get_button(3) and not button3Pressed):               # PS4 - Triangle
-                        button3Pressed = True
-                        sendClearArray()
                     elif (joystick.get_button(4) and not button4Pressed):               # PS4 - Share
-                        button4Pressed = True
-                        sendSLOW()
-                    elif (joystick2.get_button(4) and not button4Pressed):               # PS4 - Share
                         button4Pressed = True
                         sendSLOW()
                     elif (joystick.get_button(5) and not button5Pressed):               # PS4 - PS
                         button5Pressed = True
                         sendFAST()
-                    elif (joystick2.get_button(5) and not button5Pressed):               # PS4 - PS
-                        button5Pressed = True
-                        sendFAST()
                     elif (joystick.get_button(6) and not button6Pressed):               # PS4 - Option
-                        button6Pressed = True
-                        sendREPORTall()
-                    elif (joystick2.get_button(6) and not button6Pressed):               # PS4 - Option
                         button6Pressed = True
                         sendREPORTall()
                     elif (joystick.get_button(7) and not button7Pressed):               # PS4 - L3
                         button7Pressed = True
                         sendREPORTall()
-                    elif (joystick2.get_button(7) and not button7Pressed):               # PS4 - L3
-                        button7Pressed = True
-                        sendREPORTall()
                     elif (joystick.get_button(8) and not button8Pressed):               # PS4 - R3
-                        button8Pressed = True
-                        sendREPORTall()
-                    elif (joystick2.get_button(8) and not button8Pressed):               # PS4 - R3
                         button8Pressed = True
                         sendREPORTall()
                     elif (joystick.get_button(9) and not button9Pressed):               # PS4 - L1
                         button9Pressed = True
                         sendREPORTall()
-                    elif (joystick2.get_button(9) and not button9Pressed):               # PS4 - L1
-                        button9Pressed = True
-                        sendREPORTall()
                     elif (joystick.get_button(10) and not button10Pressed):             # PS4 - R1
-                        button10Pressed = True
-                        sendREPORTall()
-                    elif (joystick2.get_button(10) and not button10Pressed):             # PS4 - R1
                         button10Pressed = True
                         sendREPORTall()
                     elif (joystick.get_button(11) and not button11Pressed):             # PS4 - UP
                         button11Pressed = True
                         sendREPORTall()
-                    elif (joystick2.get_button(11) and not button11Pressed):             # PS4 - UP
-                        button11Pressed = True
-                        sendREPORTall()
                     elif (joystick.get_button(12) and not button12Pressed):             # PS4 - DOWN
-                        button12Pressed = True
-                        sendREPORTall()
-                    elif (joystick2.get_button(12) and not button12Pressed):             # PS4 - DOWN
                         button12Pressed = True
                         sendREPORTall()
                     elif (joystick.get_button(13) and not button13Pressed):             # PS4 - LEFT
                         button13Pressed = True
                         sendREPORTall()
-                    elif (joystick2.get_button(13) and not button13Pressed):             # PS4 - LEFT
-                        button13Pressed = True
-                        sendREPORTall()
                     elif (joystick.get_button(14) and not button14Pressed):             # PS4 - RIGHT
-                        button14Pressed = True
-                        sendREPORTall()
-                    elif (joystick2.get_button(14) and not button14Pressed):             # PS4 - RIGHT
                         button14Pressed = True
                         sendREPORTall()
                     elif (joystick.get_button(15) and not button15Pressed):             # PS4 - Pad
                         button15Pressed = True
                         sendREPORTall()
-                    elif (joystick2.get_button(15) and not button15Pressed):             # PS4 - Pad
-                        button15Pressed = True
-                        sendREPORTall()
 
-                if not panKeyPresseed and not tiltKeyPresseed and not joyCircle_draging and not joy2moving:
+                if not panKeyPresseed and not tiltKeyPresseed and not joyCircle_draging and not joy2Xmoving and not joy2Ymoving:
                     joyXread = joystick.get_axis(0)
                     joyYread = joystick.get_axis(1)
 
                     if (joyXread < deadRangeLow):
                         axisX = int(scale(joyXread, (-1.0,deadRangeLow), (-255,0)))
-                        joy1moving = True
+                        joy1Xmoving = True
                     elif (joyXread > deadRangeHigh):
                         axisX = int(scale(joyXread, (deadRangeHigh,1.0), (0,255)))
-                        joy1moving = True
+                        joy1Xmoving = True
                     else:
                         axisX = 0
-                        joy1moving = False
+                        joy1Xmoving = False
 
                     if (joyYread < deadRangeLow):
                         axisY = int(scale(joyYread, (-1.0,deadRangeLow), (-255,0)))
-                        joy1moving = True
+                        joy1Ymoving = True
                     elif (joyYread > deadRangeHigh):
                         axisY = int(scale(joyYread, (deadRangeHigh,1.0), (0,255)))
-                        joy1moving = True
+                        joy1Ymoving = True
                     else:
                         axisY = 0
-                        joy1moving = False
-
-                    #if (joyXread >= deadRangeLow) and (joyXread <= deadRangeHigh) and (joyYread >= deadRangeLow) and (joyYread <= deadRangeHigh):
-                    #    axisX = 0
-                    #    axisY = 0
-                    #    joy1moving = False
-
-                if not panKeyPresseed and not tiltKeyPresseed and not joyCircle_draging and not joy1moving and (joystickName2 != ''):
-                    joyXread = joystick2.get_axis(0)
-                    joyYread = joystick2.get_axis(1)
-
-                    if (joyXread < deadRangeLow):
-                        axisX = int(scale(joyXread, (-1.0,deadRangeLow), (-255,0)))
-                        joy2moving = True
-                    elif (joyXread > deadRangeHigh):
-                        axisX = int(scale(joyXread, (deadRangeHigh,1.0), (0,255)))
-                        joy2moving = True
-                    else:
-                        axisX = 0
-                        joy2moving = False
-
-                    if (joyYread < deadRangeLow):
-                        axisY = int(scale(joyYread, (-1.0,deadRangeLow), (-255,0)))
-                        joy2moving = True
-                    elif (joyYread > deadRangeHigh):
-                        axisY = int(scale(joyYread, (deadRangeHigh,1.0), (0,255)))
-                        joy2moving = True
-                    else:
-                        axisY = 0
-                        joy2moving = False
+                        joy1Ymoving = False
 
                 if not sliderKeyPresseed and not sliderCircle_draging and not joy2sliding:
                     joyZread = joystick.get_axis(2)
@@ -808,162 +743,80 @@ def process_events():
                         axisZ = 0
                         joy1sliding = False
 
-                if not sliderKeyPresseed and not sliderCircle_draging and not joy1sliding and (joystickName2 != ''):
-                    joyZread = joystick2.get_axis(2)
-
-                    if (joyZread < deadRangeLow):
-                        axisZ = int(scale(joyZread, (-1.0,deadRangeLow), (-255,0)))
-                        joy2sliding = True
-                    elif (joyZread > deadRangeHigh):
-                        axisZ = int(scale(joyZread, (deadRangeHigh,1.0), (0,255)))
-                        joy2sliding = True
-                    else:
-                        axisZ = 0
-                        joy2sliding = False
-
-            elif joy360 in joystickName:
+            elif joy360 in joystickName1:
                 if event.type == pygame.JOYBUTTONDOWN:
                     if (joystick.get_button(0) and not button0Pressed):                 # 360 - A
-                        button0Pressed = True
-                        sendEditPos()
-                    elif (joystick2.get_button(0) and not button0Pressed):              # 360 - A
                         button0Pressed = True
                         sendEditPos()
                     elif (joystick.get_button(1) and not button1Pressed):               # 360 - B
                         button1Pressed = True
                         sendAddPos()
-                    elif (joystick2.get_button(1) and not button1Pressed):               # 360 - B
-                        button1Pressed = True
-                        sendAddPos()
                     elif (joystick.get_button(2) and not button2Pressed):               # 360 - X
-                        button2Pressed = True
-                        sendExecMoves()
-                    elif (joystick2.get_button(2) and not button2Pressed):               # 360 - X
                         button2Pressed = True
                         sendExecMoves()
                     elif (joystick.get_button(3) and not button3Pressed):               # 360 - Y
                         button3Pressed = True
                         sendClearArray()
-                    elif (joystick2.get_button(3) and not button3Pressed):               # 360 - Y
-                        button3Pressed = True
-                        sendClearArray()
                     elif (joystick.get_button(4) and not button4Pressed):               # 360 - L1
-                        button4Pressed = True
-                        sendSLOW()
-                    elif (joystick2.get_button(4) and not button4Pressed):               # 360 - L1
                         button4Pressed = True
                         sendSLOW()
                     elif (joystick.get_button(5) and not button5Pressed):               # 360 - R1
                         button5Pressed = True
                         sendFAST()
-                    elif (joystick2.get_button(5) and not button5Pressed):               # 360 - R1
-                        button5Pressed = True
-                        sendFAST()
                     elif (joystick.get_button(6) and not button6Pressed):               # 360 - L3
-                        button6Pressed = True
-                        sendREPORTall()
-                    elif (joystick2.get_button(6) and not button6Pressed):               # 360 - L3
                         button6Pressed = True
                         sendREPORTall()
                     elif (joystick.get_button(7) and not button7Pressed):               # 360 - R3
                         button7Pressed = True
                         sendREPORTall()
-                    elif (joystick2.get_button(7) and not button7Pressed):               # 360 - R3
-                        button7Pressed = True
-                        sendREPORTall()
                     elif (joystick.get_button(8) and not button8Pressed):               # 360 - Start
-                        button8Pressed = True
-                        sendREPORTall()
-                    elif (joystick2.get_button(8) and not button8Pressed):               # 360 - Start
                         button8Pressed = True
                         sendREPORTall()
                     elif (joystick.get_button(9) and not button9Pressed):               # 360 - Back
                         button9Pressed = True
                         sendREPORTall()
-                    elif (joystick2.get_button(9) and not button9Pressed):               # 360 - Back
-                        button9Pressed = True
-                        sendREPORTall()
                     elif (joystick.get_button(10) and not button10Pressed):             # 360 - XBOX
-                        button10Pressed = True
-                        sendREPORTall()
-                    elif (joystick2.get_button(10) and not button10Pressed):             # 360 - XBOX
                         button10Pressed = True
                         sendREPORTall()
                     elif (joystick.get_button(11) and not button11Pressed):             # 360 - Up
                         button11Pressed = True
                         sendGOFirst()
-                    elif (joystick2.get_button(11) and not button11Pressed):             # 360 - Up
-                        button11Pressed = True
-                        sendGOFirst()
                     elif (joystick.get_button(12) and not button12Pressed):             # 360 - Down
-                        button12Pressed = True
-                        sendGOLast()
-                    elif (joystick2.get_button(12) and not button12Pressed):             # 360 - Down
                         button12Pressed = True
                         sendGOLast()
                     elif (joystick.get_button(13) and not button13Pressed):             # 360 - Left
                         button13Pressed = True
                         sendGOBack()
-                    elif (joystick2.get_button(13) and not button13Pressed):             # 360 - Left
-                        button13Pressed = True
-                        sendGOBack()
                     elif (joystick.get_button(14) and not button14Pressed):             # 360 - Right
                         button14Pressed = True
                         sendGOFwd()
-                    elif (joystick2.get_button(14) and not button14Pressed):             # 360 - Right
-                        button14Pressed = True
-                        sendGOFwd()
 
-                if not panKeyPresseed and not tiltKeyPresseed and not joyCircle_draging and not joy2moving:
+                if not panKeyPresseed and not tiltKeyPresseed and not joyCircle_draging and not joy2Xmoving and not joy2Ymoving:
                     joyXread = joystick.get_axis(0)
                     joyYread = joystick.get_axis(1)
 
                     if (joyXread < deadRangeLow):
                         axisX = int(scale(joyXread, (-1.0,deadRangeLow), (-255,0)))
-                        joy1moving = True
+                        joy1Xmoving = True
                     elif (joyXread > deadRangeHigh):
                         axisX = int(scale(joyXread, (deadRangeHigh,1.0), (0,255)))
-                        joy1moving = True
+                        joy1Xmoving = True
                     else:
                         axisX = 0
-                        joy1moving = False
+                        joy1Xmoving = False
 
                     if (joyYread < deadRangeLow):
-                        axisY = int(scale(joyYread, (-1.0,deadRangeLow), (-255,0)))
-                        joy1moving = True
+                        axisY = int(scale(joyYread, (-1.0,deadRangeLow), (-255,0))) *-1
+                        joy1Ymoving = True
                     elif (joyYread > deadRangeHigh):
-                        axisY = int(scale(joyYread, (deadRangeHigh,1.0), (0,255)))
-                        joy1moving = True
+                        axisY = int(scale(joyYread, (deadRangeHigh,1.0), (0,255))) *-1
+                        joy1Ymoving = True
                     else:
-                        axisY = 0
-                        joy1moving = False
-
-                if not panKeyPresseed and not tiltKeyPresseed and not joyCircle_draging and not joy1moving and (joystickName2 != ''):
-                    joyXread = joystick2.get_axis(0)
-                    joyYread = joystick2.get_axis(1)
-
-                    if (joyXread < deadRangeLow):
-                        axisX = int(scale(joyXread, (-1.0,deadRangeLow), (-255,0)))
-                        joy2moving = True
-                    elif (joyXread > deadRangeHigh):
-                        axisX = int(scale(joyXread, (deadRangeHigh,1.0), (0,255)))
-                        joy2moving = True
-                    else:
-                        axisX = 0
-                        joy2moving = False
-
-                    if (joyYread < deadRangeLow):
-                        axisY = int(scale(joyYread, (-1.0,deadRangeLow), (-255,0)))
-                        joy2moving = True
-                    elif (joyYread > deadRangeHigh):
-                        axisY = int(scale(joyYread, (deadRangeHigh,1.0), (0,255)))
-                        joy2moving = True
-                    else:
-                        axisY = 0
-                        joy2moving = False
+                        #axisY = 0
+                        joy1Ymoving = False
 
                 if not sliderKeyPresseed and not sliderCircle_draging and not joy2sliding:
-                    joyZread = joystick.get_axis(3)
+                    joyZread = joystick.get_axis(2)
 
                     if (joyZread < deadRangeLow):
                         axisZ = int(scale(joyZread, (-1.0,deadRangeLow), (-255,0)))
@@ -975,19 +828,7 @@ def process_events():
                         axisZ = 0
                         joy1sliding = False
 
-                if not sliderKeyPresseed and not sliderCircle_draging and not joy1sliding and (joystickName2 != ''):
-                    joyZread = joystick2.get_axis(3)
-
-                    if (joyZread < deadRangeLow):
-                        axisZ = int(scale(joyZread, (-1.0,deadRangeLow), (-255,0)))
-                        joy2sliding = True
-                    elif (joyZread > deadRangeHigh):
-                        axisZ = int(scale(joyZread, (deadRangeHigh,1.0), (0,255)))
-                        joy2sliding = True
-                    else:
-                        axisZ = 0
-                        joy2sliding = False
-
+                        '''
             elif joyNimbus in joystickName:
                 if event.type == pygame.JOYBUTTONDOWN:
                     if (joystick.get_button(0) and not button0Pressed):                 # Nimbus - A
@@ -1172,7 +1013,6 @@ def process_events():
                         axisZ = int(scale(joyZread, (deadRangeHigh,1.0), (0,255)))
                     else:
                         axisZ = 0
-
             else:
                 if event.type == pygame.JOYBUTTONDOWN:
                     if (joystick.get_button(0) and not button0Pressed):                 # A
@@ -1327,6 +1167,189 @@ def process_events():
                     else:
                         axisZ = 0
                         joy2sliding = False
+            '''
+            
+
+        if joystick2 == '':
+            pass
+        else:
+            if (joyPS4 in joystickName2) or (joyPS4BT in joystickName2) or (joyPS4Win in joystickName2):
+                if event.type == pygame.JOYBUTTONDOWN:
+                    if (joystick.get_button(0) and not button0Pressed):                  # PS4 - Cross
+                        button0Pressed = True
+                        sendEditPos()
+                    elif (joystick2.get_button(0) and not button0Pressed):               # PS4 - Cross
+                        button0Pressed = True
+                        sendEditPos()
+                    elif (joystick2.get_button(1) and not button1Pressed):               # PS4 - Circle
+                        button1Pressed = True
+                        sendAddPos()
+                    elif (joystick2.get_button(2) and not button2Pressed):               # PS4 - Square
+                        button2Pressed = True
+                        sendExecMoves()
+                    elif (joystick2.get_button(3) and not button3Pressed):               # PS4 - Triangle
+                        button3Pressed = True
+                        sendClearArray()
+                    elif (joystick2.get_button(4) and not button4Pressed):               # PS4 - Share
+                        button4Pressed = True
+                        sendSLOW()
+                    elif (joystick2.get_button(5) and not button5Pressed):               # PS4 - PS
+                        button5Pressed = True
+                        sendFAST()
+                    elif (joystick2.get_button(6) and not button6Pressed):               # PS4 - Option
+                        button6Pressed = True
+                        sendREPORTall()
+                    elif (joystick2.get_button(7) and not button7Pressed):               # PS4 - L3
+                        button7Pressed = True
+                        sendREPORTall()
+                    elif (joystick2.get_button(8) and not button8Pressed):               # PS4 - R3
+                        button8Pressed = True
+                        sendREPORTall()
+                    elif (joystick2.get_button(9) and not button9Pressed):               # PS4 - L1
+                        button9Pressed = True
+                        sendREPORTall()
+                    elif (joystick2.get_button(10) and not button10Pressed):             # PS4 - R1
+                        button10Pressed = True
+                        sendREPORTall()
+                    elif (joystick2.get_button(11) and not button11Pressed):             # PS4 - UP
+                        button11Pressed = True
+                        sendREPORTall()
+                    elif (joystick2.get_button(12) and not button12Pressed):             # PS4 - DOWN
+                        button12Pressed = True
+                        sendREPORTall()
+                    elif (joystick2.get_button(13) and not button13Pressed):             # PS4 - LEFT
+                        button13Pressed = True
+                        sendREPORTall()
+                    elif (joystick2.get_button(14) and not button14Pressed):             # PS4 - RIGHT
+                        button14Pressed = True
+                        sendREPORTall()
+                    elif (joystick2.get_button(15) and not button15Pressed):             # PS4 - Pad
+                        button15Pressed = True
+                        sendREPORTall()
+
+                if not panKeyPresseed and not tiltKeyPresseed and not joyCircle_draging and not joy1Xmoving and not joy1Ymoving:
+                    joyXread = joystick2.get_axis(0)
+                    joyYread = joystick2.get_axis(1)
+
+                    if (joyXread < deadRangeLow):
+                        axisX = int(scale(joyXread, (-1.0,deadRangeLow), (-255,0)))
+                        joy2Xmoving = True
+                    elif (joyXread > deadRangeHigh):
+                        axisX = int(scale(joyXread, (deadRangeHigh,1.0), (0,255)))
+                        joy2Xmoving = True
+                    else:
+                        axisX = 0
+                        joy2Xmoving = False
+
+                    if (joyYread < deadRangeLow):
+                        axisY = int(scale(joyYread, (-1.0,deadRangeLow), (-255,0)))
+                        joy2Ymoving = True
+                    elif (joyYread > deadRangeHigh):
+                        axisY = int(scale(joyYread, (deadRangeHigh,1.0), (0,255)))
+                        joy2Ymoving = True
+                    else:
+                        axisY = 0
+                        joy2Ymoving = False
+
+                if not sliderKeyPresseed and not sliderCircle_draging and not joy1sliding:
+                    joyZread = joystick2.get_axis(2)
+
+                    if (joyZread < deadRangeLow):
+                        axisZ = int(scale(joyZread, (-1.0,deadRangeLow), (-255,0)))
+                        joy2sliding = True
+                    elif (joyZread > deadRangeHigh):
+                        axisZ = int(scale(joyZread, (deadRangeHigh,1.0), (0,255)))
+                        joy2sliding = True
+                    else:
+                        axisZ = 0
+                        joy2sliding = False
+
+            elif joy360 in joystickName2:
+                if event.type == pygame.JOYBUTTONDOWN:
+                    if (joystick2.get_button(0) and not button0Pressed):              # 360 - A
+                        button0Pressed = True
+                        sendEditPos()
+                    elif (joystick2.get_button(1) and not button1Pressed):               # 360 - B
+                        button1Pressed = True
+                        sendAddPos()
+                    elif (joystick2.get_button(2) and not button2Pressed):               # 360 - X
+                        button2Pressed = True
+                        sendExecMoves()
+                    elif (joystick2.get_button(3) and not button3Pressed):               # 360 - Y
+                        button3Pressed = True
+                        sendClearArray()
+                    elif (joystick2.get_button(4) and not button4Pressed):               # 360 - L1
+                        button4Pressed = True
+                        sendSLOW()
+                    elif (joystick2.get_button(5) and not button5Pressed):               # 360 - R1
+                        button5Pressed = True
+                        sendFAST()
+                    elif (joystick2.get_button(6) and not button6Pressed):               # 360 - L3
+                        button6Pressed = True
+                        sendREPORTall()
+                    elif (joystick2.get_button(7) and not button7Pressed):               # 360 - R3
+                        button7Pressed = True
+                        sendREPORTall()
+                    elif (joystick2.get_button(8) and not button8Pressed):               # 360 - Start
+                        button8Pressed = True
+                        sendREPORTall()
+                    elif (joystick2.get_button(9) and not button9Pressed):               # 360 - Back
+                        button9Pressed = True
+                        sendREPORTall()
+                    elif (joystick2.get_button(10) and not button10Pressed):             # 360 - XBOX
+                        button10Pressed = True
+                        sendREPORTall()
+                    elif (joystick2.get_button(11) and not button11Pressed):             # 360 - Up
+                        button11Pressed = True
+                        sendGOFirst()
+                    elif (joystick2.get_button(12) and not button12Pressed):             # 360 - Down
+                        button12Pressed = True
+                        sendGOLast()
+                    elif (joystick2.get_button(13) and not button13Pressed):             # 360 - Left
+                        button13Pressed = True
+                        sendGOBack()
+                    elif (joystick2.get_button(14) and not button14Pressed):             # 360 - Right
+                        button14Pressed = True
+                        sendGOFwd()
+
+                if not panKeyPresseed and not tiltKeyPresseed and not joyCircle_draging and not joy1Xmoving and not joy1Ymoving:
+                    joyXread = joystick2.get_axis(0)
+                    joyYread = joystick2.get_axis(1)
+
+                    if (joyXread < deadRangeLow):
+                        axisX = int(scale(joyXread, (-1.0,deadRangeLow), (-255,0)))
+                        joy2Xmoving = True
+                    elif (joyXread > deadRangeHigh):
+                        axisX = int(scale(joyXread, (deadRangeHigh,1.0), (0,255)))
+                        joy2Xmoving = True
+                    else:
+                        axisX = 0
+                        joy2Xmoving = False
+
+                    if (joyYread < deadRangeLow):
+                        axisY = int(scale(joyYread, (-1.0,deadRangeLow), (-255,0))) *-1
+                        joy2Ymoving = True
+                    elif (joyYread > deadRangeHigh):
+                        axisY = int(scale(joyYread, (deadRangeHigh,1.0), (0,255))) *-1
+                        joy2Ymoving = True
+                    else:
+                        axisY = 0
+                        joy2Ymoving = False
+
+                if not sliderKeyPresseed and not sliderCircle_draging and not joy1sliding:
+                    joyZread = joystick2.get_axis(2)
+
+                    if (joyZread < deadRangeLow):
+                        axisZ = int(scale(joyZread, (-1.0,deadRangeLow), (-255,0)))
+                        joy2sliding = True
+                    elif (joyZread > deadRangeHigh):
+                        axisZ = int(scale(joyZread, (deadRangeHigh,1.0), (0,255)))
+                        joy2sliding = True
+                    else:
+                        axisZ = 0
+                        joy2sliding = False
+
+            
 
         if event.type == pygame.JOYBUTTONUP:
             if (button0Pressed and not joystick.get_button(0)):
