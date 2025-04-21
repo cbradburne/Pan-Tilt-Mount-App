@@ -75,6 +75,7 @@ serBuffer = ''
 serialText = ''
 joystick = ''
 joystickName = ''
+joystickName2 = ''
 button0Pressed = False
 button1Pressed = False
 button2Pressed = False
@@ -395,7 +396,7 @@ def initialiseJoysticks():
             joystickName2 = joystick2.get_name()
 
             #joystickNameID = joystk.get_instance_id()
-            #joystickName = joystickName + str(joystickNameID)
+            joystickName = joystickName + " & " + joystickName2
 
     return available_joysticks
 
@@ -541,6 +542,7 @@ def process_events():
     global axisZ
     global previousTime
     global mouseMoving
+    global joystickName2
     global joy1moving
     global joy2moving
     global joy1sliding
@@ -646,7 +648,7 @@ def process_events():
                     if (joystick.get_button(0) and not button0Pressed):                 # PS4 - Cross
                         button0Pressed = True
                         sendEditPos()
-                    elif (joystick2.get_button(0) and not button0Pressed):                 # PS4 - Cross
+                    elif (joystick2.get_button(0) and not button0Pressed):               # PS4 - Cross
                         button0Pressed = True
                         sendEditPos()
                     elif (joystick.get_button(1) and not button1Pressed):               # PS4 - Circle
@@ -764,7 +766,12 @@ def process_events():
                         axisY = 0
                         joy1moving = False
 
-                if not panKeyPresseed and not tiltKeyPresseed and not joyCircle_draging and not joy1moving:
+                    #if (joyXread >= deadRangeLow) and (joyXread <= deadRangeHigh) and (joyYread >= deadRangeLow) and (joyYread <= deadRangeHigh):
+                    #    axisX = 0
+                    #    axisY = 0
+                    #    joy1moving = False
+
+                if not panKeyPresseed and not tiltKeyPresseed and not joyCircle_draging and not joy1moving and (joystickName2 != ''):
                     joyXread = joystick2.get_axis(0)
                     joyYread = joystick2.get_axis(1)
 
@@ -801,7 +808,7 @@ def process_events():
                         axisZ = 0
                         joy1sliding = False
 
-                if not sliderKeyPresseed and not sliderCircle_draging and not joy1sliding:
+                if not sliderKeyPresseed and not sliderCircle_draging and not joy1sliding and (joystickName2 != ''):
                     joyZread = joystick2.get_axis(2)
 
                     if (joyZread < deadRangeLow):
@@ -819,7 +826,7 @@ def process_events():
                     if (joystick.get_button(0) and not button0Pressed):                 # 360 - A
                         button0Pressed = True
                         sendEditPos()
-                    elif (joystick2.get_button(0) and not button0Pressed):                 # 360 - A
+                    elif (joystick2.get_button(0) and not button0Pressed):              # 360 - A
                         button0Pressed = True
                         sendEditPos()
                     elif (joystick.get_button(1) and not button1Pressed):               # 360 - B
@@ -931,7 +938,7 @@ def process_events():
                         axisY = 0
                         joy1moving = False
 
-                if not panKeyPresseed and not tiltKeyPresseed and not joyCircle_draging and not joy1moving:
+                if not panKeyPresseed and not tiltKeyPresseed and not joyCircle_draging and not joy1moving and (joystickName2 != ''):
                     joyXread = joystick2.get_axis(0)
                     joyYread = joystick2.get_axis(1)
 
@@ -968,7 +975,7 @@ def process_events():
                         axisZ = 0
                         joy1sliding = False
 
-                if not sliderKeyPresseed and not sliderCircle_draging and not joy1sliding:
+                if not sliderKeyPresseed and not sliderCircle_draging and not joy1sliding and (joystickName2 != ''):
                     joyZread = joystick2.get_axis(3)
 
                     if (joyZread < deadRangeLow):
@@ -1271,7 +1278,7 @@ def process_events():
                         axisY = 0
                         joy1moving = False
 
-                if not panKeyPresseed and not tiltKeyPresseed and not joyCircle_draging and not joy1moving:
+                if not panKeyPresseed and not tiltKeyPresseed and not joyCircle_draging and not joy1moving and (joystickName2 != ''):
                     joyXread = joystick2.get_axis(0)
                     joyYread = joystick2.get_axis(1)
 
@@ -1308,7 +1315,7 @@ def process_events():
                         axisZ = 0
                         joy1sliding = False
 
-                if not sliderKeyPresseed and not sliderCircle_draging and not joy1sliding:
+                if not sliderKeyPresseed and not sliderCircle_draging and not joy1sliding and (joystickName2 != ''):
                     joyZread = joystick2.get_axis(2)
 
                     if (joyZread < deadRangeLow):
